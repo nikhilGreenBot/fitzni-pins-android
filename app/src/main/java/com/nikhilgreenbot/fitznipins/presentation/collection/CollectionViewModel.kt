@@ -37,6 +37,7 @@ data class CollectionUiState(
 sealed interface CollectionEvent {
     data class SearchQueryChanged(val query: String) : CollectionEvent
     data class DeletePin(val pinId: String) : CollectionEvent
+    data class SavePin(val pin: UserPin) : CollectionEvent
     data object DismissError : CollectionEvent
     data object Refresh : CollectionEvent
 }
@@ -93,6 +94,15 @@ class CollectionViewModel @Inject constructor(
                 when (val result = deletePin(event.pinId)) {
                     is FitzNiResult.Success ->
                         _effects.send(CollectionEffect.ShowSnackbar("Pin removed"))
+                    is FitzNiResult.Error ->
+                        _error.update { result.error }
+                }
+            }
+
+            is CollectionEvent.SavePin -> viewModelScope.launch {
+                when (val result = upsertPin(event.pin)) {
+                    is FitzNiResult.Success ->
+                        _effects.send(CollectionEffect.ShowSnackbar("Pin saved ✨"))
                     is FitzNiResult.Error ->
                         _error.update { result.error }
                 }

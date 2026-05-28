@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.nikhilgreenbot.fitznipins.ui.screens.collection.AddEditPinScreen
 import com.nikhilgreenbot.fitznipins.ui.screens.collection.CollectionScreen
 import com.nikhilgreenbot.fitznipins.ui.screens.home.HomeScreen
 import com.nikhilgreenbot.fitznipins.ui.screens.identify.IdentifyScreen
@@ -57,16 +57,17 @@ fun FitzNiNavGraph(
             startDestination  = startDestination,
             modifier          = Modifier.padding(innerPadding),
             enterTransition   = {
-                fadeIn(animationSpec = tween(220)) +
+                fadeIn(tween(220)) +
                 slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(220))
             },
-            exitTransition    = { fadeOut(animationSpec = tween(180)) },
-            popEnterTransition = { fadeIn(animationSpec = tween(220)) },
+            exitTransition    = { fadeOut(tween(180)) },
+            popEnterTransition = { fadeIn(tween(220)) },
             popExitTransition  = {
-                fadeOut(animationSpec = tween(180)) +
+                fadeOut(tween(180)) +
                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(180))
             },
         ) {
+            // ── Pre-main ──────────────────────────────────────────────────
             composable(Route.Splash.path) {
                 SplashScreen(
                     onNavigateToOnboarding = {
@@ -92,10 +93,11 @@ fun FitzNiNavGraph(
                 )
             }
 
+            // ── Bottom nav destinations ───────────────────────────────────
             composable(Route.Home.path) {
                 HomeScreen(
-                    onNavigateToPinTastic = { navController.navigate(Route.PinTastic.path) },
-                    onNavigateToIdentify  = { navController.navigate(Route.Identify.path) },
+                    onNavigateToPinTastic  = { navController.navigate(Route.PinTastic.path) },
+                    onNavigateToIdentify   = { navController.navigate(Route.Identify.path) },
                     onNavigateToCollection = { navController.navigate(Route.Collection.path) },
                 )
             }
@@ -119,20 +121,40 @@ fun FitzNiNavGraph(
                 )
             }
 
-            composable(Route.PinTasticDetail.path) { backStack ->
-                val productId = backStack.arguments?.getString("productId") ?: return@composable
-                PinDetailScreen(
-                    productId = productId,
+            composable(Route.Identify.path) { IdentifyScreen() }
+
+            composable(Route.Profile.path) { ProfileScreen() }
+
+            // ── Nested — Collection ───────────────────────────────────────
+            composable(Route.PinDetail.path) { backStack ->
+                val pinId = backStack.arguments?.getString("pinId") ?: return@composable
+                AddEditPinScreen(
+                    pinId  = pinId,
                     onBack = { navController.popBackStack() },
                 )
             }
 
-            composable(Route.Identify.path) {
-                IdentifyScreen()
+            composable(Route.AddEditPin.path) { backStack ->
+                val rawId = backStack.arguments?.getString("pinId")
+                val pinId = if (rawId == "new") null else rawId
+                AddEditPinScreen(
+                    pinId  = pinId,
+                    onBack = { navController.popBackStack() },
+                )
             }
 
-            composable(Route.Profile.path) {
-                ProfileScreen()
+            // ── Nested — Pin-Tastic ───────────────────────────────────────
+            composable(Route.PinTasticDetail.path) { backStack ->
+                val productId = backStack.arguments?.getString("productId") ?: return@composable
+                PinDetailScreen(
+                    productId = productId,
+                    onBack    = { navController.popBackStack() },
+                )
+            }
+
+            // ── Identify result ───────────────────────────────────────────
+            composable(Route.IdentifyResult.path) {
+                IdentifyScreen()
             }
         }
     }

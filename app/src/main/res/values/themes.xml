@@ -1,13 +1,21 @@
-<resources>
-    <style name="Theme.FitzNiPins" parent="android:Theme.Material.Light.NoActionBar" />
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base theme — transparent so Compose handles the window background -->
+    <style name="Theme.FitzNiPins" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:navigationBarColor">#0A1628</item>
+        <item name="android:statusBarColor">#0A1628</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+    </style>
 
-    <!-- Starting theme: used by activity until Compose takes over.
-         Sets the splash screen background to midnight navy to avoid white flash. -->
+    <!-- Splash screen theme — midnight navy with gold sparkle icon -->
     <style name="Theme.FitzNiPins.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#0A1628</item>
-        <!-- The animated icon is set in res/drawable/ic_splash_icon -->
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="windowSplashScreenAnimationDuration">500</item>
         <item name="postSplashScreenTheme">@style/Theme.FitzNiPins</item>
+        <item name="android:navigationBarColor">#0A1628</item>
+        <item name="android:statusBarColor">#0A1628</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>
