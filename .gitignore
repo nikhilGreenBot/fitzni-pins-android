@@ -1,0 +1,95 @@
+## ──────────────────────────────────────────
+## FitzNi Pins Android — .gitignore
+## ──────────────────────────────────────────
+
+# ── Built outputs ─────────────────────────
+*.apk
+*.aar
+*.ap_
+*.aab
+*.dex
+*.class
+
+# ── Gradle ────────────────────────────────
+.gradle/
+build/
+**/build/
+gradle-app.setting
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# ── Android Studio / IntelliJ IDEA ────────
+# Ignore the entire .idea folder — IDE state is personal and not portable
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# ── Local config (never commit SDK path) ──
+local.properties
+
+# ── Generated / intermediate ──────────────
+bin/
+gen/
+out/
+captures/
+.navigation/
+proguard/
+.externalNativeBuild/
+.cxx/
+
+# ── Keystore & signing (keep secrets out) ─
+*.jks
+*.keystore
+keystore.properties
+release-keystore.jks
+
+# ── Google / Firebase ─────────────────────
+google-services.json
+google-services.xml
+GoogleService-Info.plist
+
+# ── Crash / profiling ─────────────────────
+*.hprof
+*.log
+
+# ── Test results ──────────────────────────
+test-results/
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+
+# ── Fastlane ──────────────────────────────
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# ── Room schema exports ───────────────────
+# Keep schemas in VCS for migration history
+# app/schemas/
+
+# ── macOS ─────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ── Windows ───────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ── Linux ─────────────────────────────────
+*~
+
+# ── Editor scratch files ──────────────────
+*.swp
+*.swo
+*.orig
+.vscode/
+.cursor/

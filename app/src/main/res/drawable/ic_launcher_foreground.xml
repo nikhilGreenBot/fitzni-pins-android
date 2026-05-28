@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FitzNi Pins launcher foreground — gold sparkle pin icon -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Gold sparkle / star shape -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M54,12 L57.5,38.5 L82,26 L67,49 L94,54 L67,59 L82,82 L57.5,69.5 L54,96 L50.5,69.5 L26,82 L41,59 L14,54 L41,49 L26,26 L50.5,38.5 Z" />
+
+    <!-- Dark circle cutout in center -->
+    <path
+        android:fillColor="#0A1628"
+        android:pathData="M54,38 C47.373,38 42,43.373 42,50 C42,56.627 47.373,62 54,62 C60.627,62 66,56.627 66,50 C66,43.373 60.627,38 54,38 Z"
+        android:translateY="4" />
+
+    <!-- Inner gold dot -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M54,46 C51.239,46 49,48.239 49,51 C49,53.761 51.239,56 54,56 C56.761,56 59,53.761 59,51 C59,48.239 56.761,46 54,46 Z"
+        android:translateY="3" />
+
+</vector>
