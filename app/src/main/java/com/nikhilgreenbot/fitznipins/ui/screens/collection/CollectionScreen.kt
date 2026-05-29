@@ -39,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -167,8 +168,14 @@ private fun Card(
 ) {
     Box(
         modifier = modifier
+            .shadow(
+                elevation = 10.dp,
+                shape = shape,
+                ambientColor = FitzNiGold.copy(alpha = 0.18f),
+                spotColor = FitzNiGold.copy(alpha = 0.3f),
+            )
             .clip(shape)
-            .background(MaterialTheme.colorScheme.surfaceVariant),
+            .background(com.nikhilgreenbot.fitznipins.ui.theme.FitzNiCardSolid),
     ) {
         Column {
             if (pin.photoUris.isNotEmpty()) {
@@ -200,6 +207,7 @@ private fun Card(
                 Text(
                     pin.title,
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = androidx.compose.ui.graphics.Color.White,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )

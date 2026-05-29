@@ -3,6 +3,7 @@ package com.nikhilgreenbot.fitznipins.ui.screens.pintastic
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.ImageNotSupported
 import androidx.compose.material3.Badge
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +45,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -51,7 +55,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import com.nikhilgreenbot.fitznipins.domain.model.Franchise
 import com.nikhilgreenbot.fitznipins.domain.model.OfficialProduct
 import com.nikhilgreenbot.fitznipins.domain.model.ProductBadge
@@ -59,6 +63,7 @@ import com.nikhilgreenbot.fitznipins.presentation.pintastic.PinTasticEvent
 import com.nikhilgreenbot.fitznipins.presentation.pintastic.PinTasticEffect
 import com.nikhilgreenbot.fitznipins.presentation.pintastic.PinTasticViewModel
 import com.nikhilgreenbot.fitznipins.ui.components.ErrorBanner
+import com.nikhilgreenbot.fitznipins.ui.components.MagicalBackground
 import com.nikhilgreenbot.fitznipins.ui.theme.FitzNiGold
 import com.nikhilgreenbot.fitznipins.ui.theme.FitzNiRose
 
@@ -97,6 +102,7 @@ fun PinTasticScreen(
     }
 
     Scaffold(
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
         topBar = {
             TopAppBar(
                 title = {
@@ -110,18 +116,23 @@ fun PinTasticScreen(
                         Text(
                             "  Pin-Tastic",
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            color = FitzNiGold,
                         )
                     }
-                }
+                },
+                colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
+                    containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                ),
             )
         }
     ) { padding ->
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .nestedScroll(pullRefreshState.nestedScrollConnection)
-        ) {
+        MagicalBackground {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .nestedScroll(pullRefreshState.nestedScrollConnection)
+            ) {
             Column(Modifier.fillMaxSize()) {
                 uiState.error?.let { error ->
                     ErrorBanner(
@@ -146,7 +157,7 @@ fun PinTasticScreen(
 
                 // Disclaimer
                 Text(
-                    text = "Not affiliated with The Walt Disney Company. Products on shopDisney.",
+                    text = "Live catalog from disneystore.com. Not affiliated with Disney.",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 16.dp),
@@ -181,6 +192,7 @@ fun PinTasticScreen(
                 state = pullRefreshState,
                 modifier = Modifier.align(Alignment.TopCenter),
             )
+            }
         }
     }
 }
@@ -194,19 +206,63 @@ private fun ProductCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(
+                elevation = 10.dp,
+                shape = RoundedCornerShape(16.dp),
+                ambientColor = FitzNiGold.copy(alpha = 0.2f),
+                spotColor = FitzNiGold.copy(alpha = 0.32f),
+            )
             .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .border(
+                width = 1.dp,
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        FitzNiGold.copy(alpha = 0.55f),
+                        FitzNiRose.copy(alpha = 0.35f),
+                        FitzNiGold.copy(alpha = 0.45f),
+                    ),
+                ),
+                shape = RoundedCornerShape(16.dp),
+            )
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.92f))
             .clickable(onClick = onClick),
     ) {
         Column {
             Box {
-                AsyncImage(
+                SubcomposeAsyncImage(
                     model = product.imageUrl,
                     contentDescription = product.title,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f),
                     contentScale = ContentScale.Crop,
+                    loading = {
+                        Box(
+                            Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(
+                                color = FitzNiGold,
+                                modifier = Modifier.size(28.dp),
+                                strokeWidth = 2.dp,
+                            )
+                        }
+                    },
+                    error = {
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.surface),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                Icons.Filled.ImageNotSupported,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                                modifier = Modifier.size(40.dp),
+                            )
+                        }
+                    },
                 )
                 IconButton(
                     onClick = onWishlistToggle,
@@ -240,6 +296,7 @@ private fun ProductCard(
                 Text(
                     product.title,
                     style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
+                    color = androidx.compose.ui.graphics.Color.White,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )

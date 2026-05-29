@@ -62,4 +62,7 @@ interface OfficialProductDao {
 
     @Query("SELECT COUNT(*) FROM official_products")
     suspend fun count(): Int
+
+    @Query("DELETE FROM official_products")
+    suspend fun deleteAll()
 }

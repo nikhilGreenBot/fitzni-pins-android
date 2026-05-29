@@ -11,11 +11,11 @@ import java.time.Instant
  */
 object MockCatalogSeed {
 
-    private const val SHOP_DISNEY_PINS = "https://www.shopdisney.com/collectibles/pins/"
+    private const val SHOP_DISNEY_PINS = "https://www.disneystore.com/collectibles/pins/"
 
-    // placehold.co/WxH/bg/text?text=Label  — zero auth, reliable CDN
+    // placehold.co defaults to SVG which Coil cannot decode — force PNG.
     private fun img(bg: String, fg: String, label: String) =
-        "https://placehold.co/400x400/$bg/$fg?text=${label.replace(" ", "+")}"
+        "https://placehold.co/400x400/$bg/$fg.png?text=${label.replace(" ", "+")}"
 
     val products: List<OfficialProductDto> = listOf(
         OfficialProductDto(

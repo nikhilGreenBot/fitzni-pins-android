@@ -51,6 +51,7 @@ import com.nikhilgreenbot.fitznipins.domain.model.PinMatch
 import com.nikhilgreenbot.fitznipins.presentation.identify.IdentifyEvent
 import com.nikhilgreenbot.fitznipins.presentation.identify.IdentifyPhase
 import com.nikhilgreenbot.fitznipins.presentation.identify.IdentifyViewModel
+import com.nikhilgreenbot.fitznipins.ui.components.MagicalElevatedCard
 import com.nikhilgreenbot.fitznipins.ui.theme.FitzNiGold
 import com.nikhilgreenbot.fitznipins.ui.theme.FitzNiRose
 import kotlin.math.roundToInt
@@ -226,17 +227,18 @@ private fun MatchCard(match: PinMatch) {
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
 
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-    ) {
+    MagicalElevatedCard(shape = RoundedCornerShape(16.dp)) {
         Row(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Column(Modifier.weight(1f)) {
-                Text(match.title, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold))
+                Text(
+                    match.title,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                    color = androidx.compose.ui.graphics.Color.White,
+                )
                 Text(
                     "Source: ${match.source.name.replace('_', ' ')}",
                     style = MaterialTheme.typography.labelSmall,

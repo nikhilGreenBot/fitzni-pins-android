@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Adaptive icon background — FitzNi midnight navy -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#0A1628" />
-</shape>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Sky → ocean waves → sand (shows at icon mask edges) -->
+    <path
+        android:fillColor="#192A51"
+        android:pathData="M0,0h108v40H0z" />
+    <path
+        android:fillColor="#6B8AA8"
+        android:pathData="M0,40h108v32H0z" />
+    <path
+        android:fillColor="#8B9EB7"
+        android:pathData="M0,56h108v20H0z" />
+    <path
+        android:fillColor="#D7BA89"
+        android:pathData="M0,76h108v32H0z" />
+</vector>

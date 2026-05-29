@@ -16,6 +16,19 @@ data class OfficialProductDto(
     @SerialName("updated_at") val updatedAt: Long,
 )
 
+/** Product metadata embedded in Disney Store PLP tiles (Tealium analytics). */
+@Serializable
+data class TealiumProductDto(
+    val id: String,
+    val name: String,
+    val price: String,
+    @SerialName("original_price") val originalPrice: String? = null,
+    val message: String? = null,
+    val availability: String? = null,
+    @SerialName("pims_character_name") val characterName: String? = null,
+    val category: String? = null,
+)
+
 @Serializable
 data class CatalogResponseDto(
     val products: List<OfficialProductDto>,

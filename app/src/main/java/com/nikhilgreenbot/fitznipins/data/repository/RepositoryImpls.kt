@@ -5,9 +5,12 @@ import com.nikhilgreenbot.fitznipins.data.local.dao.OfficialProductDao
 import com.nikhilgreenbot.fitznipins.data.local.dao.UserPinDao
 import com.nikhilgreenbot.fitznipins.data.mapper.toDomain
 import com.nikhilgreenbot.fitznipins.data.mapper.toEntity
+import com.nikhilgreenbot.fitznipins.data.remote.DisneyStoreCatalogFetcher
 import com.nikhilgreenbot.fitznipins.data.remote.MockCatalogSeed
+import timber.log.Timber
 import com.nikhilgreenbot.fitznipins.domain.model.FitzNiResult
 import com.nikhilgreenbot.fitznipins.domain.model.Franchise
+import com.nikhilgreenbot.fitznipins.domain.model.ProductBadge
 import com.nikhilgreenbot.fitznipins.domain.model.IdentifyResult
 import com.nikhilgreenbot.fitznipins.domain.model.MatchSource
 import com.nikhilgreenbot.fitznipins.domain.model.OfficialProduct
@@ -60,26 +63,44 @@ class PinRepositoryImpl @Inject constructor(
 @Singleton
 class CatalogRepositoryImpl @Inject constructor(
     private val dao: OfficialProductDao,
+    private val disneyStoreCatalogFetcher: DisneyStoreCatalogFetcher,
 ) : CatalogRepository {
 
     override suspend fun refreshOfficialProducts(): FitzNiResult<Unit> = runCatching {
-        // Phase B: replace with Retrofit API call
-        // For now, seed the DB with mock data on first run
-        if (dao.count() == 0) {
-            val entities = MockCatalogSeed.products.map { dto ->
-                com.nikhilgreenbot.fitznipins.domain.model.OfficialProduct(
-                    id = dto.id,
-                    title = dto.title,
-                    price = dto.price,
-                    imageUrl = dto.imageUrl,
-                    productUrl = dto.productUrl,
-                    franchise = runCatching { Franchise.valueOf(dto.franchise) }.getOrDefault(Franchise.DISNEY),
-                    description = dto.description,
-                    updatedAt = Instant.ofEpochSecond(dto.updatedAt),
-                ).toEntity()
-            }
-            dao.upsertAll(entities)
+        val fetched = runCatching { disneyStoreCatalogFetcher.fetch() }
+            .onFailure { Timber.w(it, "Disney Store catalog fetch failed") }
+            .getOrDefault(emptyList())
+
+        val usingLiveCatalog = fetched.isNotEmpty()
+        val products = if (usingLiveCatalog) {
+            fetched
+        } else {
+            Timber.i("Using mock catalog fallback")
+            MockCatalogSeed.products
         }
+
+        if (usingLiveCatalog) {
+            dao.deleteAll()
+        }
+
+        val entities = products.map { dto ->
+            val existing = dao.getById(dto.id)
+            com.nikhilgreenbot.fitznipins.domain.model.OfficialProduct(
+                id = dto.id,
+                title = dto.title,
+                price = dto.price,
+                imageUrl = dto.imageUrl,
+                productUrl = dto.productUrl,
+                franchise = runCatching { Franchise.valueOf(dto.franchise) }.getOrDefault(Franchise.DISNEY),
+                badges = dto.badges.mapNotNull {
+                    runCatching { ProductBadge.valueOf(it) }.getOrNull()
+                },
+                description = dto.description,
+                isInWishlist = existing?.isInWishlist ?: false,
+                updatedAt = Instant.ofEpochSecond(dto.updatedAt),
+            ).toEntity()
+        }
+        dao.upsertAll(entities)
     }.fold(
         onSuccess = { FitzNiResult.Success(Unit) },
         onFailure = { FitzNiResult.Error(UserFacingError.Unknown) }

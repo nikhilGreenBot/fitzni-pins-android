@@ -165,7 +165,7 @@ fun PinDetailScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = FitzNiGold),
                 ) {
                     Icon(Icons.Filled.OpenInBrowser, contentDescription = null, tint = FitzNiMidnight)
-                    Text("  View on shopDisney", color = FitzNiMidnight, fontWeight = FontWeight.Bold)
+                    Text("  View on Disney Store", color = FitzNiMidnight, fontWeight = FontWeight.Bold)
                 }
 
                 Spacer(Modifier.height(8.dp))
